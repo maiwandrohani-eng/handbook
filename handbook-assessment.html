@@ -86,6 +86,11 @@
     .hero-notice div { line-height: 1.7; }
     .hero-notice h3 { margin: 0 0 8px; font-size: 1rem; }
     .hero-notice p { margin: 0; opacity: 0.95; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; }
+    .button-link { display: inline-flex; align-items: center; justify-content: center; padding: 14px 22px; border-radius: 16px; font-weight: 700; text-decoration: none; transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease; }
+    .button-link:hover { transform: translateY(-1px); }
+    .button-primary { background: linear-gradient(135deg, #38bdf8 0%, #ec4899 100%); color: #ffffff; box-shadow: 0 16px 30px rgba(236, 72, 153, 0.18); }
+    .button-secondary { background: rgba(255,255,255,0.18); color: #ffffff; border: 1px solid rgba(255,255,255,0.25); }
     .language-switcher { display: flex; justify-content: flex-end; margin-top: 16px; }
     .rtl { direction: rtl; }
     .rtl .form-grid, .rtl .options label { text-align: right; }
@@ -133,7 +138,7 @@
       <div class="hero-top">
         <div>
           <div class="hero-brand">
-            <img src="/Logo.png" alt="INARA logo" class="brand-logo">
+            <img src="Logo.png" alt="INARA logo" class="brand-logo">
             <span>INARA handbook readiness</span>
           </div>
           <p id="hero-tag">INARA employee readiness</p>
@@ -151,6 +156,9 @@
           <h3 id="how-it-works-title">How it works</h3>
           <p id="how-it-works-text">Enter your name, country, and job title to unlock the assessment. The quiz includes a global policy section plus five country-specific policy questions for your selected country.</p>
         </div>
+      </div>
+      <div class="hero-actions">
+        <a href="INARA%20Global_Employee%20Handbook%20June%202026.pdf" class="button-link button-primary" target="_blank" rel="noopener" download>Download the handbook</a>
       </div>
       <div class="language-switcher">
         <button id="language-toggle" class="secondary" type="button">العربية</button>
