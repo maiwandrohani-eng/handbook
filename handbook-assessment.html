@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INARA Handbook Assessment</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: linear-gradient(180deg, #f4f6ff 0%, #eef2ff 45%, #f7fafc 100%); color: #111827; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+    header.hero { display: grid; gap: 24px; padding: 38px 28px; border-radius: 28px; background: linear-gradient(135deg, #1e293b 0%, #4338ca 100%); color: #f8fafc; box-shadow: 0 24px 72px rgba(14, 34, 84, 0.18); }
+    .hero-top { display: grid; gap: 24px; grid-template-columns: 1.4fr 1fr; align-items: center; }
+    .hero-top h1 { margin: 0; font-size: clamp(2rem, 3vw, 3.4rem); line-height: 1.02; letter-spacing: -0.05em; }
+    .hero-top p { margin: 0; font-size: 1.05rem; line-height: 1.85; opacity: 0.92; }
+    .hero-stats { display: grid; gap: 14px; }
+    .stat-card { padding: 18px 20px; border-radius: 20px; background: rgba(248, 250, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .stat-card strong { display: block; font-size: 1.9rem; margin-bottom: 8px; }
+    .stat-card span { color: #dbeafe; }
+    .hero-notice { display: flex; gap: 12px; align-items: flex-start; padding: 18px 20px; border-radius: 20px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); }
+    .hero-notice div { line-height: 1.7; }
+    .hero-notice h3 { margin: 0 0 8px; font-size: 1rem; }
+    .hero-notice p { margin: 0; opacity: 0.9; }
+    .language-switcher { display: flex; justify-content: flex-end; margin-top: 16px; }
+    .rtl { direction: rtl; }
+    .rtl .form-grid, .rtl .options label { text-align: right; }
+    .rtl input[type="text"], .rtl select { direction: rtl; }
+
+    .section-card, .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); }
+    .section-card { margin-top: 28px; }
+    h2 { margin-top: 0; font-size: 1.75rem; }
+    .subtitle { color: #475569; margin-top: 10px; line-height: 1.8; }
+    .form-grid { display: grid; gap: 20px; max-width: 760px; }
+    .field { display: grid; gap: 10px; }
+    label { font-weight: 700; color: #1f2937; }
+    input[type="text"], select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 1rem; color: #0f172a; }
+    input[type="text"]:focus, select:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
+    button { border: none; border-radius: 16px; padding: 15px 22px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease; }
+    button:hover { transform: translateY(-1px); }
+    .primary { background: #1d4ed8; color: #ffffff; box-shadow: 0 16px 30px rgba(29, 78, 216, 0.18); }
+    .secondary { background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .notice, .summary, .card p { color: #475569; }
+    .notice { margin-top: 16px; padding: 18px 20px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 16px; }
+    .warning { background: #fef3c7; border-color: #fde68a; }
+    .question { margin-bottom: 18px; padding: 20px; border-radius: 18px; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .question h3 { margin: 0 0 10px; font-size: 1rem; color: #1e293b; }
+    .options label { display: block; margin-bottom: 10px; cursor: pointer; line-height: 1.7; }
+    .options input { margin-right: 10px; accent-color: #2563eb; }
+    .summary-box { padding: 24px; border-radius: 22px; background: #eff6ff; border: 1px solid #bfdbfe; }
+    .summary-box strong { display: block; margin-bottom: 10px; font-size: 1.05rem; }
+    .results-list { margin-top: 18px; padding-left: 20px; color: #334155; }
+    .results-list li { margin-bottom: 10px; }
+    .pass { color: #064e3b; background: #dcfce7; border-color: #86efac; }
+    .fail { color: #7f1d1d; background: #fee2e2; border-color: #fecaca; }
+    .grid-2 { display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mt-24 { margin-top: 24px; }
+    .hidden { display: none; }
+    .large-note { margin-top: 16px; font-size: 0.98rem; line-height: 1.8; }
+
+    @media (max-width: 860px) { .hero-top { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-top">
+        <div>
+          <p id="hero-tag" style="text-transform: uppercase; letter-spacing: 0.26em; opacity: 0.8; margin-bottom: 16px;">INARA employee readiness</p>
+          <h1 id="hero-title">Handbook readiness assessment</h1>
+          <p id="hero-intro">Complete the policy quiz to confirm you know the global handbook and the country annex policies that apply to your role. This assessment is designed to ensure employees understand the rules, rights, and responsibilities that matter most.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card"><strong>100+</strong><span id="stat-1-label">policy questions across the handbook</span></div>
+          <div class="stat-card"><strong>95%</strong><span id="stat-2-label">passing score required</span></div>
+          <div class="stat-card"><strong>Global + country</strong><span id="stat-3-label">two sections to complete</span></div>
+        </div>
+      </div>
+      <div class="hero-notice">
+        <div>
+          <h3 id="how-it-works-title">How it works</h3>
+          <p id="how-it-works-text">Enter your name, country, and job title to unlock the assessment. The quiz includes a global policy section plus five country-specific policy questions for your selected country.</p>
+        </div>
+      </div>
+      <div class="language-switcher">
+        <button id="language-toggle" class="secondary" type="button">العربية</button>
+      </div>
+    </header>
+
+    <section class="section-card">
+      <h2 id="start-here-title">Start here</h2>
+      <p id="start-here-subtitle" class="subtitle">Your details help us direct you to the correct country-specific policies and keep the results shareable with HR.</p>
+      <form id="employee-form" class="form-grid">
+        <div class="field">
+          <label id="label-name" for="employee-name">Full name</label>
+          <input type="text" id="employee-name" name="employeeName" placeholder="e.g. Leila Hassan" required>
+        </div>
+        <div class="field">
+          <label id="label-country" for="employee-country">Country</label>
+          <select id="employee-country" name="employeeCountry" required>
+            <option id="country-option-placeholder" value="" disabled selected>Select your country</option>
+            <option value="Egypt">Egypt</option>
+            <option value="Türkiye">Türkiye</option>
+            <option value="Lebanon">Lebanon</option>
+            <option value="Afghanistan">Afghanistan</option>
+            <option value="Palestine">Palestine</option>
+            <option value="Syria">Syria</option>
+            <option value="Ukraine">Ukraine</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="label-job" for="employee-job">Job title / role</label>
+          <input type="text" id="employee-job" name="employeeJob" placeholder="e.g. Caseworker" required>
+        </div>
+        <div>
+          <button id="begin-assessment-button" type="submit" class="primary">Begin assessment</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="section-card hidden" id="assessment-section">
+      <div class="grid-2" style="align-items: start; gap: 32px;">
+        <div>
+          <h2 id="assessment-title">Complete the assessment</h2>
+          <p id="assessment-subtitle" class="subtitle">Answer all questions honestly. The assessment is policy-focused and helps confirm you understand handbook expectations, conduct rules, and local requirements.</p>
+        </div>
+        <div class="summary-box" id="employee-summary"></div>
+      </div>
+      <div class="notice mt-24" id="assessment-notice">There are <strong>100 questions total</strong>: 95 global policy questions plus 5 country-specific policy questions. You must answer every question before submitting.</div>
+      <form id="assessment-form"></form>
+      <button id="submit-button" class="primary mt-24" type="button">Submit answers</button>
+    </section>
+
+    <section class="section-card hidden" id="results-section">
+      <h2 id="results-title">Assessment result</h2>
+      <div id="results-summary"></div>
+      <ul class="results-list" id="result-details"></ul>
+      <div class="grid-2 mt-24">
+        <button id="copy-results" class="primary" type="button">Copy result summary</button>
+        <button id="restart-button" class="secondary" type="button">Restart assessment</button>
+      </div>
+      <p class="notice mt-24" id="results-share">When the assessment completes, share your result with HR immediately via email or the internal reporting channel.</p>
+    </section>
+  </main>
+
+  <script>
+    const globalQuestions = [
+      { text: "INARA policy applies to all personnel globally, including remote and cross-border staff.", options: ['True', 'False'], answer: "True" },
+      { text: "Local law takes precedence over the handbook when it provides greater protection.", options: ['True', 'False'], answer: "True" },
+      { text: "Country annexes may be more specific when local law requires it.", options: ['True', 'False'], answer: "True" },
+      { text: "The handbook framework still applies when a country annex is silent on the subject.", options: ['True', 'False'], answer: "True" },
+      { text: "Policy exceptions must be documented and approved by the relevant authority.", options: ['True', 'False'], answer: "True" },
+      { text: "Recruitment decisions must be based on merit, qualifications, and business need.", options: ['True', 'False'], answer: "True" },
+      { text: "Candidates must not be discriminated against on protected characteristics.", options: ['True', 'False'], answer: "True" },
+      { text: "Reasonable adjustments should be offered to applicants with disabilities.", options: ['True', 'False'], answer: "True" },
+      { text: "Pre-employment checks may include references, screening, and security checks.", options: ['True', 'False'], answer: "True" },
+      { text: "Falsifying application information may result in offer withdrawal or dismissal.", options: ['True', 'False'], answer: "True" },
+      { text: "Hiring a family member requires disclosure when it may create a conflict of interest.", options: ['True', 'False'], answer: "True" },
+      { text: "Supervisors should not evaluate a direct report who is a close relative without disclosure.", options: ['True', 'False'], answer: "True" },
+      { text: "Personnel files are confidential and access is restricted to authorized personnel.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees may request correction of inaccurate personnel-file information.", options: ['True', 'False'], answer: "True" },
+      { text: "Probation may be extended only with written notice before the initial period ends.", options: ['True', 'False'], answer: "True" },
+      { text: "Performance during probation is assessed and may determine continued employment.", options: ['True', 'False'], answer: "True" },
+      { text: "National staff are employed by the locally registered employing entity in their country.", options: ['True', 'False'], answer: "True" },
+      { text: "Job descriptions document core responsibilities and reporting lines.", options: ['True', 'False'], answer: "True" },
+      { text: "Acting appointments require written approval and may carry additional allowances.", options: ['True', 'False'], answer: "True" },
+      { text: "Transfers, secondments, and reassignments require clear documentation and approval.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees may not change their official work country without HR approval.", options: ['True', 'False'], answer: "True" },
+      { text: "Remote work arrangements require prior written approval.", options: ['True', 'False'], answer: "True" },
+      { text: "A safe and secure home office is required when remote work is approved.", options: ['True', 'False'], answer: "True" },
+      { text: "Remote staff must maintain valid visas and work permits when working abroad.", options: ['True', 'False'], answer: "True" },
+      { text: "Reliable internet and secure connectivity are part of the remote worker\u2019s responsibilities.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees must record working hours and attendance accurately.", options: ['True', 'False'], answer: "True" },
+      { text: "Falsifying time records is misconduct.", options: ['True', 'False'], answer: "True" },
+      { text: "Overtime must be pre-approved unless there is an approved emergency.", options: ['True', 'False'], answer: "True" },
+      { text: "Meal and rest breaks are provided according to local law and the annex.", options: ['True', 'False'], answer: "True" },
+      { text: "Unauthorized absence may lead to disciplinary action.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees are expected to be present for scheduled hours and meetings.", options: ['True', 'False'], answer: "True" },
+      { text: "On-call requirements and compensation are defined by contract or local policy.", options: ['True', 'False'], answer: "True" },
+      { text: "Weekend or holiday work requires prior approval and is compensated under local law.", options: ['True', 'False'], answer: "True" },
+      { text: "Annual leave is intended for rest and should be planned with a supervisor.", options: ['True', 'False'], answer: "True" },
+      { text: "Annual leave carryover is limited unless local law or the annex allows more.", options: ['True', 'False'], answer: "True" },
+      { text: "Public holiday entitlements are defined by local law and annex policy.", options: ['True', 'False'], answer: "True" },
+      { text: "Sick leave typically requires notification on the first day of absence.", options: ['True', 'False'], answer: "True" },
+      { text: "Maternity, paternity, and parental leave are provided according to local law and annex policy.", options: ['True', 'False'], answer: "True" },
+      { text: "Compassionate leave is available for qualifying family emergencies.", options: ['True', 'False'], answer: "True" },
+      { text: "Bereavement leave is usually granted for the death of an immediate family member.", options: ['True', 'False'], answer: "True" },
+      { text: "Religious leave is accommodated reasonably consistent with operational needs.", options: ['True', 'False'], answer: "True" },
+      { text: "Jury duty, civic duty, and official public service leave are supported when required by law.", options: ['True', 'False'], answer: "True" },
+      { text: "Study or examination leave is subject to approval and operational feasibility.", options: ['True', 'False'], answer: "True" },
+      { text: "Unpaid leave may be granted on written request and is not automatic.", options: ['True', 'False'], answer: "True" },
+      { text: "Leave may be canceled in exceptional operational circumstances.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees should plan leave to avoid losing accrued annual leave.", options: ['True', 'False'], answer: "True" },
+      { text: "Salary is based on the job, qualifications, and local market context.", options: ['True', 'False'], answer: "True" },
+      { text: "Payroll errors should be reported and corrected promptly.", options: ['True', 'False'], answer: "True" },
+      { text: "Overpayments are recoverable in accordance with local law.", options: ['True', 'False'], answer: "True" },
+      { text: "Salary advances are normally only available after six months of service.", options: ['True', 'False'], answer: "True" },
+      { text: "Official communication allowances and devices are provided for work use only.", options: ['True', 'False'], answer: "True" },
+      { text: "Insurance and social-security benefits follow local legal requirements.", options: ['True', 'False'], answer: "True" },
+      { text: "Retirement and statutory contributions are administered in line with local law.", options: ['True', 'False'], answer: "True" },
+      { text: "Pay increases are not automatic and depend on performance and approval.", options: ['True', 'False'], answer: "True" },
+      { text: "Performance appraisals, probation reviews, and development plans are part of the framework.", options: ['True', 'False'], answer: "True" },
+      { text: "Performance improvement plans support employees who are not meeting standards.", options: ['True', 'False'], answer: "True" },
+      { text: "Promotion decisions are based on merit, competence, and organizational need.", options: ['True', 'False'], answer: "True" },
+      { text: "Demotion or reassignment may occur after fair consultation.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees are encouraged to participate in training and development opportunities.", options: ['True', 'False'], answer: "True" },
+      { text: "Career development is supported but not guaranteed by the handbook.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees must follow the performance review schedule agreed with their manager.", options: ['True', 'False'], answer: "True" },
+      { text: "Workplace behavior must be professional, respectful, and inclusive.", options: ['True', 'False'], answer: "True" },
+      { text: "Harassment, bullying, and abusive conduct are prohibited.", options: ['True', 'False'], answer: "True" },
+      { text: "Bullying is repeated unreasonable behavior that creates a hostile work environment.", options: ['True', 'False'], answer: "True" },
+      { text: "Gifts and hospitality must comply with conflict-of-interest rules.", options: ['True', 'False'], answer: "True" },
+      { text: "Personal relationships that affect supervision must be disclosed.", options: ['True', 'False'], answer: "True" },
+      { text: "Confidential information must not be shared with unauthorized people.", options: ['True', 'False'], answer: "True" },
+      { text: "Sensitive data must be protected and privacy requirements respected.", options: ['True', 'False'], answer: "True" },
+      { text: "Unauthorized recording of colleagues or beneficiaries is prohibited.", options: ['True', 'False'], answer: "True" },
+      { text: "Use of public AI tools for beneficiary data without authorization is not allowed.", options: ['True', 'False'], answer: "True" },
+      { text: "Ethical behavior is required in safeguarding, finance, and field operations.", options: ['True', 'False'], answer: "True" },
+      { text: "INARA maintains zero tolerance for sexual exploitation and abuse.", options: ['True', 'False'], answer: "True" },
+      { text: "Staff must never be alone with a child in a private place where they cannot be seen or heard.", options: ['True', 'False'], answer: "True" },
+      { text: "Staff must never sleep in the same room or bed as a child or vulnerable adult.", options: ['True', 'False'], answer: "True" },
+      { text: "Beneficiary relationships must never be sexual or exploitative.", options: ['True', 'False'], answer: "True" },
+      { text: "Suspected safeguarding concerns must be reported promptly through approved channels.", options: ['True', 'False'], answer: "True" },
+      { text: "Good-faith reporters are protected against retaliation.", options: ['True', 'False'], answer: "True" },
+      { text: "False or malicious safeguarding reports are not protected.", options: ['True', 'False'], answer: "True" },
+      { text: "Safeguarding investigations are handled by trained staff and maintain confidentiality.", options: ['True', 'False'], answer: "True" },
+      { text: "Health and safety includes hazard reporting, accident prevention, and risk mitigation.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees must report accidents, incidents, and near misses promptly.", options: ['True', 'False'], answer: "True" },
+      { text: "Fire safety, evacuation, and first-aid procedures must be followed.", options: ['True', 'False'], answer: "True" },
+      { text: "Security incidents must be reported immediately to the security focal point.", options: ['True', 'False'], answer: "True" },
+      { text: "Business continuity instructions must be followed in emergency situations.", options: ['True', 'False'], answer: "True" },
+      { text: "Travel and field movement require authorization and appropriate security clearance.", options: ['True', 'False'], answer: "True" },
+      { text: "Duty of care includes staff wellbeing, medical support, and safe premises.", options: ['True', 'False'], answer: "True" },
+      { text: "The handbook provides channels for reporting wrongdoing, including HR and the Board route.", options: ['True', 'False'], answer: "True" },
+      { text: "Reports made in good faith are protected from retaliation.", options: ['True', 'False'], answer: "True" },
+      { text: "Knowingly false or malicious reports are not protected.", options: ['True', 'False'], answer: "True" },
+      { text: "Grievances should be raised informally first when possible.", options: ['True', 'False'], answer: "True" },
+      { text: "Formal grievances are acknowledged and investigated impartially.", options: ['True', 'False'], answer: "True" },
+      { text: "Employees may be accompanied in grievance meetings where permitted by law.", options: ['True', 'False'], answer: "True" },
+      { text: "Disciplinary action is based on documented allegations and allows the employee to respond.", options: ['True', 'False'], answer: "True" },
+      { text: "Misconduct and gross misconduct are distinguished by seriousness and consequence.", options: ['True', 'False'], answer: "True" },
+      { text: "Summary dismissal may occur for gross misconduct when lawful.", options: ['True', 'False'], answer: "True" }
+    ];
+
+
+
+
+
+
+
+
+    const countryQuestions = {
+      Egypt: [
+        { text: 'Egypt annex defines annual leave as 15 days in the first year and 21 days from year two.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Egypt policy requires a three-month notice period for resignation under the annex.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Egypt country policy covers national social contributions and mandatory local insurance.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Egypt annex requires consulting local law for termination and notice rules.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Egypt country policy includes statutory public holidays, overtime rules, and local leave entitlements.', options: ['True', 'False'], answer: 'True' },
+      ],
+      Türkiye: [
+        { text: 'Türkiye annex defines annual leave as 14 days for the first five years, 20 days after five years, and 26 days after 15 years.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Türkiye country policy requires written notice and may provide pay in lieu of notice.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Türkiye annex covers SGK registration and employer/employee social-security contributions.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Türkiye policy treats overtime, rest-day work, and holiday pay under national law.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Türkiye annex requires local compliance while maintaining the handbook’s safeguarding and conduct standards.', options: ['True', 'False'], answer: 'True' },
+      ],
+      Lebanon: [
+        { text: 'Lebanon annex covers local leave entitlements, public holidays, and termination notice requirements.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Lebanon country policy includes local statutory protections for maternity and leave.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Lebanon annex requires employees to follow local labour law for resignation and notice.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Lebanon country policy includes rules on wages, payroll, and social contributions.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Lebanon annex must be consulted for local working hours and leave entitlement details.', options: ['True', 'False'], answer: 'True' },
+      ],
+      Afghanistan: [
+        { text: 'Afghanistan annex includes local leave entitlements and national holiday rules.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Afghanistan country policy covers working hours, overtime, and termination procedures.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Afghanistan annex requires local compliance with statutory contributions and employment categories.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Afghanistan policy includes local notice requirements for resignation and termination.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Afghanistan annex must be consulted before applying general handbook leave or payroll policies in that country.', options: ['True', 'False'], answer: 'True' },
+      ],
+      Palestine: [
+        { text: 'Palestine annex covers annual leave, public holidays, and overtime compensation under local law.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Palestine country policy includes termination notice and resignation procedures.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Palestine annex outlines local social-security contributions and employee protections.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Palestine policy requires local law compliance while preserving handbook standards.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Palestine annex details leave types such as sick, maternity, and compassionate leave.', options: ['True', 'False'], answer: 'True' },
+      ],
+      Syria: [
+        { text: 'Syria annex includes local leave entitlements and national holiday provisions.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Syria country policy covers local termination notice and employment categories.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Syria annex requires local statutory compliance for social contributions and payroll.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Syria policy explains when the global handbook applies and when the annex governs.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Syria annex covers working hours, overtime, and leave type entitlements.', options: ['True', 'False'], answer: 'True' },
+      ],
+      Ukraine: [
+        { text: 'Ukraine annex covers local leave entitlements, public holidays, and overtime rules.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Ukraine country policy includes termination notice, resignation, and fixed-term contract rules.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Ukraine annex explains local social-security contributions and payroll obligations.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Ukraine policy requires country-specific compliance while maintaining global safeguards.', options: ['True', 'False'], answer: 'True' },
+        { text: 'Ukraine annex includes local working hours, leave types, and statutory protections.', options: ['True', 'False'], answer: 'True' },
+      ],
+    };
+
+    const questionsByLanguage = {
+      en: { globalQuestions, countryQuestions },
+      ar: { globalQuestions: globalQuestions.map(question => ({ ...question })), countryQuestions }
+    };
+
+    const translations = {
+      en: {
+        pageTitle: 'INARA Handbook Assessment',
+        heroTag: 'INARA employee readiness',
+        heroTitle: 'Handbook readiness assessment',
+        heroIntro: 'Complete the policy quiz to confirm you know the global handbook and the country annex policies that apply to your role. This assessment is designed to ensure employees understand the rules, rights, and responsibilities that matter most.',
+        statQuestions: 'policy questions across the handbook',
+        statScore: 'passing score required',
+        statSections: 'two sections to complete',
+        howItWorksTitle: 'How it works',
+        howItWorksText: 'Enter your name, country, and job title to unlock the assessment. The quiz includes a global policy section plus five country-specific policy questions for your selected country.',
+        startHere: 'Start here',
+        subtitleStart: 'Your details help us direct you to the correct country-specific policies and keep the results shareable with HR.',
+        fullName: 'Full name',
+        country: 'Country',
+        jobTitle: 'Job title / role',
+        namePlaceholder: 'e.g. Leila Hassan',
+        jobPlaceholder: 'e.g. Caseworker',
+        selectCountry: 'Select your country',
+        beginAssessment: 'Begin assessment',
+        assessmentTitle: 'Complete the assessment',
+        assessmentSubtitle: 'Answer all questions honestly. The assessment is policy-focused and helps confirm you understand handbook expectations, conduct rules, and local requirements.',
+        questionNotice: 'There are <strong>100 questions total</strong>: 95 global policy questions plus 5 country-specific policy questions. You must answer every question before submitting.',
+        submitAnswers: 'Submit answers',
+        assessmentResult: 'Assessment result',
+        copyResult: 'Copy result summary',
+        restartAssessment: 'Restart assessment',
+        shareNotice: 'When the assessment completes, share your result with HR immediately via email or the internal reporting channel.',
+        summaryName: 'Name:',
+        summaryCountry: 'Country:',
+        summaryRole: 'Role:',
+        summaryTotal: 'Total questions:',
+        passed: 'Passed',
+        failed: 'Failed',
+        scoreLine: 'Score: {score}% ({correctCount} of {totalCount} correct)',
+        passedText: 'You have met the 95% passing threshold.',
+        failedText: 'You did not meet the 95% passing threshold. Please review the handbook and retake the assessment.',
+        missingAnswers: 'Please answer every question before submitting.',
+        yourAnswer: 'Your answer:',
+        correct: 'Correct.',
+        correctAnswer: 'Correct answer',
+        andMore: '...and',
+        moreResults: 'more question results.',
+        summaryHeader: 'INARA Handbook Assessment Results',
+        summaryResult: 'Result:',
+        copySummaryLine: 'Share this result with HR.',
+        copySuccess: 'Copied!',
+        languageButton: 'العربية'
+      },
+      ar: {
+        pageTitle: 'تقييم جاهزية دليل INARA',
+        heroTag: 'جاهزية موظفي INARA',
+        heroTitle: 'تقييم جاهزية الدليل',
+        heroIntro: 'أكمل اختبار السياسة لتأكيد معرفتك بالدليل العالمي وملحق البلد الذي ينطبق على دورك. يهدف هذا التقييم إلى التأكد من فهم الموظفين للقواعد والحقوق والمسؤوليات الأكثر أهمية.',
+        statQuestions: 'أسئلة سياسة عبر الدليل',
+        statScore: 'الدرجة المطلوبة للنجاح',
+        statSections: 'قسمان للإكمال',
+        howItWorksTitle: 'كيفية العمل',
+        howItWorksText: 'أدخل اسمك وبلدك والمسمى الوظيفي لفتح التقييم. يتضمن الاختبار قسمًا للسياسة العالمية بالإضافة إلى خمسة أسئلة خاصة بكل بلد.',
+        startHere: 'ابدأ من هنا',
+        subtitleStart: 'تساعدنا بياناتك في توجيهك إلى سياسات البلد الصحيحة وجعل النتيجة قابلة للمشاركة مع الموارد البشرية.',
+        fullName: 'الاسم الكامل',
+        country: 'البلد',
+        jobTitle: 'المسمى الوظيفي / الدور',
+        namePlaceholder: 'مثلاً ليلى حسن',
+        jobPlaceholder: 'مثلاً أخصائية حالات',
+        selectCountry: 'اختر بلدك',
+        beginAssessment: 'ابدأ التقييم',
+        assessmentTitle: 'أكمل التقييم',
+        assessmentSubtitle: 'أجب عن جميع الأسئلة بصدق. الاختبار يركز على السياسة ويساعد في التأكد من فهمك لتوقعات الدليل وقواعد السلوك والمتطلبات المحلية.',
+        questionNotice: 'هناك <strong>100 سؤالًا إجمالاً</strong>: 95 سؤالًا عن السياسة العالمية بالإضافة إلى 5 أسئلة خاصة بكل بلد. يجب الإجابة على كل سؤال قبل الإرسال.',
+        submitAnswers: 'إرسال الأجوبة',
+        assessmentResult: 'نتيجة التقييم',
+        copyResult: 'نسخ ملخص النتيجة',
+        restartAssessment: 'إعادة التقييم',
+        shareNotice: 'عند اكتمال التقييم، شارك نتيجتك مع الموارد البشرية فورًا عبر البريد الإلكتروني أو القناة الداخلية.',
+        summaryName: 'الاسم:',
+        summaryCountry: 'البلد:',
+        summaryRole: 'الدور:',
+        summaryTotal: 'إجمالي الأسئلة:',
+        passed: 'ناجح',
+        failed: 'لم ينجح',
+        scoreLine: 'الدرجة: {score}% ({correctCount} من {totalCount} صحيحة)',
+        passedText: 'لقد حققت الحد الأدنى المطلوب 95%.',
+        failedText: 'لم تحقق الحد الأدنى المطلوب 95%. يرجى مراجعة الدليل وإعادة الاختبار.',
+        missingAnswers: 'يرجى الإجابة على كل سؤال قبل الإرسال.',
+        yourAnswer: 'إجابتك:',
+        correct: 'صحيح.',
+        correctAnswer: 'الإجابة الصحيحة',
+        andMore: '...و',
+        moreResults: 'نتائج أسئلة إضافية.',
+        summaryHeader: 'نتائج تقييم INARA لدليل العمل',
+        summaryResult: 'النتيجة:',
+        copySummaryLine: 'شارك هذه النتيجة مع الموارد البشرية.',
+        copySuccess: 'تم النسخ!',
+        languageButton: 'English'
+      }
+    };
+
+    let currentLanguage = 'en';
+
+    function t(key) {
+      return translations[currentLanguage][key];
+    }
+
+    function setLanguage(language) {
+      currentLanguage = language;
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.body.classList.toggle('rtl', language === 'ar');
+      document.title = t('pageTitle');
+      document.getElementById('hero-tag').textContent = t('heroTag');
+      document.getElementById('hero-title').textContent = t('heroTitle');
+      document.getElementById('hero-intro').textContent = t('heroIntro');
+      document.getElementById('stat-1-label').textContent = t('statQuestions');
+      document.getElementById('stat-2-label').textContent = t('statScore');
+      document.getElementById('stat-3-label').textContent = t('statSections');
+      document.getElementById('how-it-works-title').textContent = t('howItWorksTitle');
+      document.getElementById('how-it-works-text').textContent = t('howItWorksText');
+      document.getElementById('start-here-title').textContent = t('startHere');
+      document.getElementById('start-here-subtitle').textContent = t('subtitleStart');
+      document.getElementById('label-name').textContent = t('fullName');
+      document.getElementById('employee-name').placeholder = t('namePlaceholder');
+      document.getElementById('label-country').textContent = t('country');
+      document.getElementById('country-option-placeholder').textContent = t('selectCountry');
+      document.getElementById('label-job').textContent = t('jobTitle');
+      document.getElementById('employee-job').placeholder = t('jobPlaceholder');
+      document.getElementById('begin-assessment-button').textContent = t('beginAssessment');
+      document.getElementById('assessment-title').textContent = t('assessmentTitle');
+      document.getElementById('assessment-subtitle').textContent = t('assessmentSubtitle');
+      document.getElementById('assessment-notice').innerHTML = t('questionNotice');
+      document.getElementById('submit-button').textContent = t('submitAnswers');
+      document.getElementById('results-title').textContent = t('assessmentResult');
+      document.getElementById('copy-results').textContent = t('copyResult');
+      document.getElementById('restart-button').textContent = t('restartAssessment');
+      document.getElementById('results-share').textContent = t('shareNotice');
+      document.getElementById('language-toggle').textContent = t('languageButton');
+    }
+
+    function expandTranslations() {
+      return questionsByLanguage[currentLanguage];
+    }
+
+    const employeeForm = document.getElementById('employee-form');
+    const assessmentSection = document.getElementById('assessment-section');
+    const assessmentForm = document.getElementById('assessment-form');
+    const employeeSummary = document.getElementById('employee-summary');
+    const resultsSection = document.getElementById('results-section');
+    const resultsSummary = document.getElementById('results-summary');
+    const resultDetails = document.getElementById('result-details');
+    const copyButton = document.getElementById('copy-results');
+    const restartButton = document.getElementById('restart-button');
+    const submitButton = document.getElementById('submit-button');
+    const languageToggle = document.getElementById('language-toggle');
+
+    let selectedCountry = '';
+    let employeeName = '';
+    let employeeJob = '';
+
+    employeeForm.addEventListener('submit', event => {
+      event.preventDefault();
+      employeeName = document.getElementById('employee-name').value.trim();
+      selectedCountry = document.getElementById('employee-country').value;
+      employeeJob = document.getElementById('employee-job').value.trim();
+
+      if (!employeeName || !selectedCountry || !employeeJob) {
+        return;
+      }
+
+      employeeSummary.innerHTML = `
+        <div class="summary-box">
+          <strong>${t('summaryName')}</strong> ${employeeName}<br>
+          <strong>${t('summaryCountry')}</strong> ${selectedCountry}<br>
+          <strong>${t('summaryRole')}</strong> ${employeeJob}<br>
+          <strong>${t('summaryTotal')}</strong> 100
+        </div>
+      `;
+      buildAssessment();
+      assessmentSection.classList.remove('hidden');
+      resultsSection.classList.add('hidden');
+      window.scrollTo({ top: assessmentSection.offsetTop - 16, behavior: 'smooth' });
+    });
+
+    function buildAssessment() {
+      assessmentForm.innerHTML = '';
+      const currentQuestions = questionsByLanguage[currentLanguage];
+      const questions = [...currentQuestions.globalQuestions, ...currentQuestions.countryQuestions[selectedCountry]];
+
+      questions.forEach((question, index) => {
+        const questionBlock = document.createElement('div');
+        questionBlock.className = 'question';
+        const questionNumber = index + 1;
+        questionBlock.innerHTML = `<h3>Question ${questionNumber}</h3><p>${question.text}</p>`;
+
+        const options = document.createElement('div');
+        options.className = 'options';
+
+        question.options.forEach(option => {
+          const optionId = `q${index}-${option.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
+          const label = document.createElement('label');
+          label.setAttribute('for', optionId);
+          label.innerHTML = `<input type="radio" id="${optionId}" name="question-${index}" value="${option}" required> ${option}`;
+          options.appendChild(label);
+        });
+
+        questionBlock.appendChild(options);
+        assessmentForm.appendChild(questionBlock);
+      });
+    }
+
+    submitButton.addEventListener('click', () => {
+      const answers = new FormData(assessmentForm);
+      const currentQuestions = questionsByLanguage[currentLanguage];
+      const questions = [...currentQuestions.globalQuestions, ...currentQuestions.countryQuestions[selectedCountry]];
+      let correctCount = 0;
+      const totalCount = questions.length;
+      const feedback = [];
+
+      for (let index = 0; index < totalCount; index++) {
+        const userAnswer = answers.get(`question-${index}`);
+        if (!userAnswer) {
+          alert(t('missingAnswers'));
+          return;
+        }
+        const correctAnswer = questions[index].answer;
+        const isCorrect = userAnswer === correctAnswer;
+        if (isCorrect) correctCount += 1;
+        feedback.push({ question: questions[index].text, userAnswer, correctAnswer, isCorrect });
+      }
+
+      const score = Math.round((correctCount / totalCount) * 100);
+      const passed = score >= 95;
+
+      resultsSummary.innerHTML = `
+        <div class="summary-box ${passed ? 'pass' : 'fail'}">
+          <strong>${passed ? t('passed') : t('failed')}</strong>
+          <p>${t('scoreLine').replace('{score}', score).replace('{correctCount}', correctCount).replace('{totalCount}', totalCount)}</p>
+          <p>${passed ? t('passedText') : t('failedText')}</p>
+        </div>
+      `;
+
+      resultDetails.innerHTML = '';
+      feedback.slice(0, 6).forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.question} — ${t('yourAnswer')} ${item.userAnswer}. ${item.isCorrect ? t('correct') : `${t('correctAnswer')}: ${item.correctAnswer}.`}`;
+        resultDetails.appendChild(li);
+      });
+      if (feedback.length > 6) {
+        const remaining = document.createElement('li');
+        remaining.textContent = `${t('andMore')} ${feedback.length - 6} ${t('moreResults')}`;
+        resultDetails.appendChild(remaining);
+      }
+
+      assessmentSection.classList.add('hidden');
+      resultsSection.classList.remove('hidden');
+      window.scrollTo({ top: resultsSection.offsetTop - 16, behavior: 'smooth' });
+    });
+
+    copyButton.addEventListener('click', async () => {
+      const lineBreak = '\n';
+      const scoreLine = resultsSummary.querySelector('p') ? resultsSummary.querySelector('p').textContent : '';
+      const statusLine = resultsSummary.querySelector('strong') ? resultsSummary.querySelector('strong').textContent : '';
+      const summaryText = `${t('summaryHeader')}${lineBreak}${t('summaryName')} ${employeeName}${lineBreak}${t('summaryCountry')} ${selectedCountry}${lineBreak}${t('summaryRole')} ${employeeJob}${lineBreak}${scoreLine}${lineBreak}${t('summaryResult')} ${statusLine}${lineBreak}${t('copySummaryLine')}`;
+      await navigator.clipboard.writeText(summaryText);
+      copyButton.textContent = t('copySuccess');
+      setTimeout(() => { copyButton.textContent = t('copyResult'); }, 1800);
+    });
+
+    restartButton.addEventListener('click', () => {
+      document.getElementById('employee-form').reset();
+      assessmentForm.innerHTML = '';
+      assessmentSection.classList.add('hidden');
+      resultsSection.classList.add('hidden');
+      document.getElementById('employee-name').focus();
+    });
+
+    languageToggle.addEventListener('click', () => {
+      setLanguage(currentLanguage === 'en' ? 'ar' : 'en');
+    });
+
+    setLanguage('en');
+  </script>
+</body>
+</html>
